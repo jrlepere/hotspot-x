@@ -1,6 +1,10 @@
 package com.jrlepere.hotspot_rest_api;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,16 +16,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jrlepere.hotspot_component_interface.CallableMethod;
 import com.jrlepere.hotspot_component_interface.Container;
+import com.jrlepere.hotspot_component_interface.Method;
 import com.jrlepere.hotspot_rest_api.project.ContainerNode;
 import com.jrlepere.hotspot_rest_api.project.IProjectNode;
+import com.jrlepere.hotspot_rest_api.project.MethodNode;
 
 @RestController
 public class AppController {
 
-	private IProjectNode projectRoot;
-	private final IdComponentMapper idComponentMapper
+	private static ContainerNode projectRoot;
+	private final static IdComponentMapper idComponentMapper
 			= new IdComponentMapper();
-	private final MethodCallTimeCollection methodCallTimesCollection
+	private final static MethodCallTimeCollection methodCallTimesCollection
 			= new MethodCallTimeCollection();
 
 	@RequestMapping(value="/init", method = RequestMethod.POST)
@@ -32,30 +38,42 @@ public class AppController {
 	
 	@RequestMapping(value="/register", method = RequestMethod.POST)
 	public ResponseEntity<Integer> register(@RequestBody CallableMethod callableMethod) {
+		Container[] methodPath = callableMethod.getPath();
 		// validate length
-		// validate last is Method
+		setProjectRootIfNull(methodPath[0]);
 		// validate first is root
-		// validate none first and none last are all Containers
-//		int i = 1;
-//		IProjectNode currentNode;
-//		for (currentNode = projectRoot; i < methodPath.length-1; i ++) {
-//			ProjectComponent nextComponent = methodPath[i];
-//			if (currentNode.containsChildComponent(nextComponent)) {
-//				currentNode = currentNode.getChildNode(nextComponent);
-//			} else {
-//				ContainerNode nextNode = new ContainerNode(currentNode,
-//						(Container) nextComponent);
-//				currentNode.addChild(nextNode);
-//				currentNode = nextNode;
-//			}
-//		}
-//		// validate currentNode does not already have method registered
-//		MethodNode methodNode = new MethodNode(currentNode, (Method) methodPath[i]);
-//		methodCallTimesCollection.registerMethod(methodNode.getId());
-//		currentNode.addChild(methodNode);
-//		return methodNode.getId();
-		System.out.println(callableMethod);
-		return new ResponseEntity<Integer>(1, HttpStatus.OK);
+		int i = 1;
+		IProjectNode currentNode;
+		for (currentNode = projectRoot; i < methodPath.length; i ++) {
+			Container nextComponent = methodPath[i];
+			if (currentNode.containsChildComponent(nextComponent)) {
+				currentNode = currentNode.getChildNode(nextComponent);
+			} else {
+				ContainerNode nextNode = new ContainerNode(currentNode, nextComponent);
+				currentNode.addChild(nextNode);
+				currentNode = nextNode;
+				idComponentMapper.add(currentNode.getId(), currentNode);
+			}
+		}
+		
+		Method method = callableMethod.getMethod();
+		MethodNode methodNode;
+		if (currentNode.containsChildComponent(method)) {
+			methodNode = (MethodNode) currentNode.getChildNode(method);
+		} else {
+			methodNode = new MethodNode(currentNode, method);
+			idComponentMapper.add(methodNode.getId(), methodNode);
+			methodCallTimesCollection.registerMethod(methodNode.getId());
+			currentNode.addChild(methodNode);
+		}
+		return new ResponseEntity<Integer>(methodNode.getId(), HttpStatus.OK);
+	}
+	
+	private static void setProjectRootIfNull(Container root) {
+		if (projectRoot == null) {
+			projectRoot = new ContainerNode(null, root);
+			idComponentMapper.add(projectRoot.getId(), projectRoot);
+		}
 	}
 	
 	@RequestMapping("/notify")
@@ -75,10 +93,26 @@ public class AppController {
 		return childComponentIds.toArray(new Integer[childComponentIds.size()]);
 	}
 	
-	
-	@RequestMapping("/temp")
+	@RequestMapping("/methodCallTimes")
 	public MethodCallTimes methodCallTimes(@RequestParam("id") Integer componentId) {
-		return null;
+		MethodCallTimes methodCallTimes = new MethodCallTimes();
+		Collection<MethodNode> methodNodes = idComponentMapper.getComponent(componentId).getMethodNodes();
+		Map<Integer, Method> methodMap = new HashMap<>();
+		Collection<MethodCall> methodCalls = new LinkedList<>();
+		for (MethodNode methodNode : methodNodes) {
+			Integer methodId = methodNode.getId();
+			if (methodCallTimesCollection.hasMethodCalls(methodId)) {
+				methodMap.put(methodId, (Method) methodNode.getProjectComponent());
+				for (Date time : methodCallTimesCollection.getMethodCallTimes(methodId)) {
+					methodCalls.add(new MethodCall(methodId, time));
+				}
+			}
+		}
+		
+		methodCallTimes.setMethodMap(methodMap);
+		methodCallTimes.setMethodCalls(methodCalls.toArray(new MethodCall[methodCalls.size()]));
+		
+		return methodCallTimes;
 	}
 	
 }

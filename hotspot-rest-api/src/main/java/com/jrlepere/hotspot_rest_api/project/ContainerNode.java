@@ -51,6 +51,22 @@ public class ContainerNode extends ProjectNode {
 		return methods;
 	}
 	
+	public Collection<Integer> getMethodIds() {
+		LinkedList<Integer> methodIds = new LinkedList<>();
+		for (IProjectNode child : children) {
+			methodIds.addAll(child.getMethodIds());
+		}
+		return methodIds;
+	}
+	
+	public Collection<MethodNode> getMethodNodes() {
+		LinkedList<MethodNode> methodNodes = new LinkedList<>();
+		for (IProjectNode child : children) {
+			methodNodes.addAll(child.getMethodNodes());
+		}
+		return methodNodes;
+	}
+	
 	public boolean containsChildComponent(ProjectComponent component) {
 		for (IProjectNode child : children) {
 			if (child.getProjectComponent().equals(component)) {

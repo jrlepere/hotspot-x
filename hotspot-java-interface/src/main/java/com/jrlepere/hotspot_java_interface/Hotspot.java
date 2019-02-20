@@ -20,7 +20,7 @@ import com.jrlepere.hotspot_component_interface.Container;
 
 public class Hotspot {
 	
-	private static final Map<CallableMethod, String> idMap = new HashMap<>();
+	private static final Map<CallableMethod, Integer> idMap = new HashMap<>();
 	
 	private static final String postUrl = "http://localhost:8080/";
 	private static final Gson gson = new Gson();
@@ -35,7 +35,7 @@ public class Hotspot {
 			post = getHttpPost(relativePath, callableMethod);
 			response = httpClient.execute(post);
 			HttpEntity entity = response.getEntity();
-			idMap.put(callableMethod, EntityUtils.toString(entity, "UTF-8"));	
+			idMap.put(callableMethod, Integer.parseInt(EntityUtils.toString(entity, "UTF-8")));	
 			post.releaseConnection();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -44,9 +44,15 @@ public class Hotspot {
 	}
 	
 	public static void notify(Object callableMethod) {
-		final String relativePath = "register";
-		System.out.println(idMap.get(callableMethod));
-		// get id
+		final String relativePath = "notify?id="+idMap.get(callableMethod);
+		HttpPost post = new HttpPost(postUrl + relativePath);
+		HttpResponse response;
+		try {
+			response = httpClient.execute(post);
+			post.releaseConnection();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private static HttpPost getHttpPost(String relativePath, Object entity) throws UnsupportedEncodingException {

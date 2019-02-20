@@ -11,6 +11,8 @@ public class App {
 		Calculator calc = new Calculator(0, 0);
 		calc.add();
 		calc.add();
+		calc.multiply();
+		calc.subtract();
 	}
 	
 }

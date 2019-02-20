@@ -12,5 +12,7 @@ public interface IProjectNode {
 	public ProjectComponent getProjectComponent();
 	public Collection<Integer> getChildComponentIds();
 	public Collection<Method> getMethods();
+	public Collection<Integer> getMethodIds();
+	public Collection<MethodNode> getMethodNodes();
 	public boolean containsChildComponent(ProjectComponent component);
 }

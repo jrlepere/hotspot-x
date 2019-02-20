@@ -1,19 +1,20 @@
 package com.jrlepere.hotspot_rest_api.project;
 
-public abstract class ProjectNode implements IProjectNode {
+import java.util.concurrent.atomic.AtomicInteger;
 
-	// TODO: ID generator
+public abstract class ProjectNode implements IProjectNode {
 	
+	private static AtomicInteger integerCounter = new AtomicInteger();
 	private int id;
 	private IProjectNode parent;
 	
 	public ProjectNode(IProjectNode parent) {
-		// id = gen id
+		id = integerCounter.incrementAndGet();
 		this.parent = parent;
 	}
 	
 	public int getId() {
-		return 0;
+		return id;
 	}
 	
 	public boolean equals(Object otherProjectNode) {

@@ -29,7 +29,8 @@ public class MethodCallTimeCollection {
 	}
 	
 	public Date[] getMethodCallTimes(int componentId) {
-		return methodCallTimes.get(componentId).toArray(new Date[methodCallTimes.size()]);
+		Queue<Date> callTimes = methodCallTimes.get(componentId);
+		return callTimes.toArray(new Date[callTimes.size()]);
 	}
 	
 }

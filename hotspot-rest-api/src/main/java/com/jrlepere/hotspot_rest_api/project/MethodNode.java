@@ -31,7 +31,15 @@ public class MethodNode extends ProjectNode {
 	}
 
 	public Collection<Method> getMethods() {
-		return new LinkedList<Method>(Arrays.asList(method));
+		return new LinkedList<>(Arrays.asList(method));
+	}
+	
+	public Collection<Integer> getMethodIds() {
+		return new LinkedList<>(Arrays.asList(getId()));
+	}
+	
+	public Collection<MethodNode> getMethodNodes() {
+		return new LinkedList<>(Arrays.asList(this));
 	}
 	
 	public boolean containsChildComponent(ProjectComponent component) {

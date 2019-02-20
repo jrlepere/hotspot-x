@@ -12,7 +12,7 @@ import { MethodCall } from './method-call';
 })
 export class HotspotService {
 
-  private methodsUrl = 'api/methodCalls';
+  private methodsUrl = 'http://localhost:8080/';
 
   constructor(private http: HttpClient) { }
 
