@@ -1,5 +1,5 @@
 
 export class MethodCall {
-    name: string;
-    milliseconds: number;
+    methodId: number;
+    time: Date;
 }

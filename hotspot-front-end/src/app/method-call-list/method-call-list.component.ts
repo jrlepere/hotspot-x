@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { MethodCall } from '../method-call';
+import { MethodCallTimes } from '../method-call-times';
 import { HotspotService } from '../hotspot.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { HotspotService } from '../hotspot.service';
 })
 export class MethodCallListComponent implements OnInit {
 
-  methodCalls: MethodCall[];
+  methodCallTimes: MethodCallTimes;
 
   constructor(private hotspotService: HotspotService) { }
 
@@ -19,8 +19,8 @@ export class MethodCallListComponent implements OnInit {
   }
 
   getMethodCalls(): void {
-      this.hotspotService.getMethodCalls()
-        .subscribe(methodCalls => this.methodCalls = methodCalls);
+      this.hotspotService.getMethodCalls(1)
+        .subscribe(methodCalls => this.methodCallTimes = methodCalls);
   }
 
 }

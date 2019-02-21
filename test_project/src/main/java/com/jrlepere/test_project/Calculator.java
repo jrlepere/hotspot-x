@@ -6,14 +6,16 @@ public class Calculator {
 
 	private static final String[] CALCULATOR_CLASS_PATH =
 			new String[]{"com", "jrlepere", "test_project", "Calculator.java", "Calculator"};
-	public static final Object ADD = Hotspot.register(CALCULATOR_CLASS_PATH, "add", new String[0]);
-	public static final Object SUB = Hotspot.register(CALCULATOR_CLASS_PATH, "subtract", new String[0]);
-	public static final Object MUL = Hotspot.register(CALCULATOR_CLASS_PATH, "multiply", new String[0]);
+	public static final Object CONSTRUCTOR = Hotspot.register(CALCULATOR_CLASS_PATH, "Calculator", new String[] {"int", "int"});
+	public static final Object ADD = Hotspot.register(CALCULATOR_CLASS_PATH, "add", new String[] {});
+	public static final Object SUB = Hotspot.register(CALCULATOR_CLASS_PATH, "subtract", new String[] {});
+	public static final Object MUL = Hotspot.register(CALCULATOR_CLASS_PATH, "multiply", new String[] {});
 	
 	
 	private int x, y;
 	
 	public Calculator(int x, int y) {
+		Hotspot.notify(CONSTRUCTOR);
 		this.x = x;
 		this.y = y;
 	}

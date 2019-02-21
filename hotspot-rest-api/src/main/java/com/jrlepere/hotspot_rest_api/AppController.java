@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,12 +30,6 @@ public class AppController {
 			= new IdComponentMapper();
 	private final static MethodCallTimeCollection methodCallTimesCollection
 			= new MethodCallTimeCollection();
-
-	@RequestMapping(value="/init", method = RequestMethod.POST)
-	public void init(@RequestBody Container rootContainer) {
-		System.out.println(rootContainer);
-		projectRoot = new ContainerNode(null, (Container) rootContainer);
-	}
 	
 	@RequestMapping(value="/register", method = RequestMethod.POST)
 	public ResponseEntity<Integer> register(@RequestBody CallableMethod callableMethod) {
@@ -82,11 +77,13 @@ public class AppController {
 	}
 	
 	@RequestMapping("/rootComponentId")
-	public int getRootComponentId() {
+	@CrossOrigin(origins = "http://localhost:4200")
+	public Integer getRootComponentId() {
 		return projectRoot.getId();
 	}
 	
 	@RequestMapping("/childComponentIds")
+	@CrossOrigin(origins = "http://localhost:4200")
 	public Integer[] getChildComponentIds(@RequestParam("id") Integer componentId) {
 		Collection<Integer> childComponentIds
 				= idComponentMapper.getComponent(componentId).getChildComponentIds();
@@ -94,6 +91,7 @@ public class AppController {
 	}
 	
 	@RequestMapping("/methodCallTimes")
+	@CrossOrigin(origins = "http://localhost:4200")
 	public MethodCallTimes methodCallTimes(@RequestParam("id") Integer componentId) {
 		MethodCallTimes methodCallTimes = new MethodCallTimes();
 		Collection<MethodNode> methodNodes = idComponentMapper.getComponent(componentId).getMethodNodes();

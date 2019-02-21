@@ -1,5 +1,14 @@
-<ul>
-    <li *ngFor="let methodCall of methodCalls">
-        {{methodCall.name}}  {{methodCall.milliseconds}}
+<ul *ngIf="methodCallTimes">
+    <li *ngFor="let methodCall of methodCallTimes.methodCalls">
+        {{methodCall.methodId}}
+        {{methodCall.time | date}}
+        {{methodCallTimes.methodMap[methodCall.methodId].name}}
+        (
+        <div *ngIf="methodCallTimes.methodMap[methodCall.methodId].paramTypes">
+            <div *ngFor="let paramType of methodCallTimes.methodMap[methodCall.methodId].paramTypes">
+                paramType
+            </div>
+        </div>
+        )
     </li>
 </ul>

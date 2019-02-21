@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 import { HotspotService } from '../hotspot.service';
-import { MethodCall } from '../method-call';
+import { MethodCallTimes } from '../method-call-times';
 
 @Component({
   selector: 'app-method-call-log',
@@ -10,7 +10,7 @@ import { MethodCall } from '../method-call';
 })
 export class MethodCallLogComponent implements OnInit {
 
-  methodCalls: MethodCall[];
+  @Input() methodCallTimes: MethodCallTimes;
 
   constructor(private hotspotService: HotspotService) { }
 
@@ -19,8 +19,9 @@ export class MethodCallLogComponent implements OnInit {
   }
 
   getMethodCalls(): void {
-      this.hotspotService.getMethodCalls()
-        .subscribe(methodCalls => this.methodCalls = methodCalls);
+      console.log('Log component get call times');
+      this.hotspotService.getMethodCallsAll()
+        .subscribe(methodCalls => this.methodCallTimes = methodCalls);
   }
 
 }

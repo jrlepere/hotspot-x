@@ -1,13 +1,11 @@
 package com.jrlepere.hotspot_java_interface;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -16,7 +14,6 @@ import org.apache.http.util.EntityUtils;
 
 import com.google.gson.Gson;
 import com.jrlepere.hotspot_component_interface.CallableMethod;
-import com.jrlepere.hotspot_component_interface.Container;
 
 public class Hotspot {
 	
